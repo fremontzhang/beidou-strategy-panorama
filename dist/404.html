@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>北斗智影战略全景图 v3.0</title>
+    <script src="https://cdn.tailwindcss.com/3.4.0"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/d3@7"></script>
+    <script src="https://unpkg.com/lucide-react@0.555.0/dist/umd/lucide-react.js"></script>
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8fafc;
+        margin: 0;
+        padding: 0;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .slide-in-from-bottom {
+        animation: slideInFromBottom 0.7s ease-out;
+      }
+
+      @keyframes slideInFromBottom {
+        from { transform: translateY(100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+
+      .backdrop-blur-md {
+        backdrop-filter: blur(12px);
+      }
+
+      .hover\:shadow-lg:hover {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel" data-presets="env,react" data-type="module">
+      const { useState, useEffect } = React;
+      const {
+        Target,
+        Map,
+        Flag,
+        Menu,
+        X,
+        Zap,
+        Globe,
+        BrainCircuit,
+        Users,
+        Database,
+        LayoutDashboard,
+        TrendingUp
+      } = LucideReact;
+
+      // Components
+      const LayoutDashboardComponent = () => React.createElement('div', {
+        className: 'bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10'
+      }, [
+        React.createElement('div', {
+          className: 'text-emerald-400 font-bold mb-1 flex items-center gap-2'
+        }, [
+          React.createElement(LayoutDashboard, { size: 16 }),
+          ' 商业模式'
+        ]),
+        React.createElement('div', {
+          className: 'text-sm text-slate-200'
+        }, '分发平台 + 股权制作 (J-V Model)')
+      ]);
+
+      const WhyBeidou = () => {
+        const features = [
+          {
+            title: "三频信号优势",
+            description: "提供L、S、C三频段服务，实现更高精度和可靠性",
+            icon: React.createElement(Zap, { size: 24 })
+          },
+          {
+            title: "星间链路技术",
+            description: "卫星间直接通信，提高系统抗毁能力和安全性",
+            icon: React.createElement(Database, { size: 24 })
+          },
+          {
+            title: "全球覆盖能力",
+            description: "服务范围覆盖全球，为一带一路提供导航支持",
+            icon: React.createElement(Globe, { size: 24 })
+          },
+          {
+            title: "短报文通信",
+            description: "独特短报文服务，适合应急和民用通信需求",
+            icon: React.createElement(Flag, { size: 24 })
+          }
+        ];
+
+        return React.createElement('div', {
+          className: 'mt-10 animate-fade-in'
+        }, [
+          React.createElement('h2', {
+            className: 'text-2xl font-bold text-slate-800 mb-8 text-center'
+          }, '为什么选择北斗？'),
+          React.createElement('div', {
+            className: 'grid md:grid-cols-2 gap-6'
+          },
+            features.map((feature, index) =>
+              React.createElement('div', {
+                key: index,
+                className: 'bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300'
+              }, [
+                React.createElement('div', {
+                  className: 'flex items-center mb-4'
+                }, [
+                  React.createElement('div', {
+                    className: 'p-3 bg-blue-500 text-white rounded-lg'
+                  }, [feature.icon]),
+                  React.createElement('h3', {
+                    className: 'text-xl font-semibold text-slate-800'
+                  }, feature.title)
+                ]),
+                React.createElement('p', {
+                  className: 'text-slate-600 leading-relaxed'
+                }, feature.description)
+              ])
+            ))
+          ])
+        ]);
+      };
+
+      const CoreEngines = () => {
+        const engines = [
+          {
+            title: "AI 技术能力",
+            description: "以 AI 为核心的创作与内容生成能力。",
+            icon: React.createElement(BrainCircuit, { size: 32 }),
+            items: [
+              "AI 动态漫画制作",
+              "虚拟人 (OPG 版权核心)",
+              "原创与二创 (Remix) 能力",
+              "批量化内容生产"
+            ]
+          },
+          {
+            title: "达人整合能力",
+            description: "强大的 KOL/MCN 资源整合与运营能力。",
+            icon: React.createElement(Users, { size: 32 }),
+            items: [
+              "类比 '三只羊' 的 MCN 模式",
+              "达人向 AI 方向转型支持",
+              "孵化超级个体"
+            ]
+          },
+          {
+            title: "平台底层理解",
+            description: "对社交媒体平台算法的深度理解。",
+            icon: React.createElement(Database, { size: 32 }),
+            items: [
+              "Youtube 等海外平台规则",
+              "流量分发逻辑",
+              "数据驱动的运营决策",
+              "商业化变现路径"
+            ]
+          }
+        ];
+
+        return React.createElement('div', {
+          className: 'mt-10 animate-fade-in'
+        }, [
+          React.createElement('h2', {
+            className: 'text-2xl font-bold text-slate-800 mb-8 text-center'
+          }, '北斗智影核心引擎'),
+          React.createElement('div', {
+            className: 'grid grid-cols-1 md:grid-cols-3 gap-6'
+          },
+            engines.map((engine, index) =>
+              React.createElement('div', {
+                key: index,
+                className: 'bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-lg transition-shadow duration-300 group'
+              }, [
+                React.createElement('div', {
+                  className: 'bg-slate-50 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:bg-blue-50 transition-colors flex-shrink-0'
+                }, [engine.icon]),
+                React.createElement('h3', {
+                  className: 'text-xl font-bold text-slate-900 mb-3 text-center'
+                }, engine.title),
+                React.createElement('p', {
+                  className: 'text-slate-500 text-sm mb-6 leading-relaxed border-b border-slate-100 pb-4'
+                }, engine.description),
+                React.createElement('ul', {
+                  className: 'space-y-3'
+                },
+                  engine.items.map((item, itemIndex) =>
+                    React.createElement('li', {
+                      key: itemIndex,
+                      className: 'flex items-start gap-3 text-slate-600 text-sm'
+                    }, [
+                      React.createElement('div', {
+                        className: 'w-1.5 h-1.5 bg-slate-300 rounded-full mt-1.5 flex-shrink-0'
+                      }),
+                      React.createElement('span', {
+                        className: 'leading-relaxed'
+                      }, item)
+                    ])
+                  )
+                )
+              ])
+            ))
+          ])
+        ]);
+      };
+
+      const Roadmap = () => {
+        const phases = [
+          {
+            title: "2025 Q1 - 技术验证期",
+            description: "完成AI技术架构验证，建立核心算法模型",
+            status: "completed"
+          },
+          {
+            title: "2025 Q2 - 产品开发期",
+            description: "开发用户端产品，实现内容创作工具链",
+            status: "in-progress"
+          },
+          {
+            title: "2025 Q3 - 市场测试期",
+            description: "邀请内测用户，收集反馈并优化产品体验",
+            status: "planning"
+          },
+          {
+            title: "2025 Q4 - 正式发布期",
+            description: "面向全球用户正式发布，建立商业化运营体系",
+            status: "planning"
+          }
+        ];
+
+        const getStatusColor = (status) => {
+          switch (status) {
+            case "completed": return "bg-green-500";
+            case "in-progress": return "bg-blue-500";
+            case "planning": return "bg-slate-400";
+            default: return "bg-slate-300";
+          }
+        };
+
+        const getStatusText = (status) => {
+          switch (status) {
+            case "completed": return "已完成";
+            case "in-progress": return "进行中";
+            case "planning": return "规划中";
+            default: return "未开始";
+          }
+        };
+
+        return React.createElement('div', {
+          className: 'mt-10 animate-fade-in'
+        }, [
+          React.createElement('h2', {
+            className: 'text-2xl font-bold text-slate-800 mb-8 text-center'
+          }, '战略实施路线'),
+          React.createElement('div', {
+            className: 'max-w-4xl mx-auto'
+          },
+            phases.map((phase, index) =>
+              React.createElement('div', {
+                key: index,
+                className: 'flex gap-8 mb-8'
+              }, [
+                React.createElement('div', {
+                  className: 'flex-shrink-0 w-16'
+                }, [
+                  React.createElement('div', {
+                    className: `w-4 h-4 rounded-full ${getStatusColor(phase.status)}`
+                  }),
+                  React.createElement('div', {
+                    className: 'w-16 h-px bg-slate-300 mt-8'
+                  })
+                ]),
+                React.createElement('div', {
+                  className: 'flex-grow'
+                }, [
+                  React.createElement('h3', {
+                    className: 'text-lg font-semibold text-slate-800 mb-2'
+                  }, phase.title),
+                  React.createElement('p', {
+                    className: 'text-slate-600 leading-relaxed'
+                  }, phase.description),
+                  React.createElement('div', {
+                    className: 'mt-3 inline-flex items-center gap-2'
+                  }, [
+                    React.createElement('span', {
+                      className: `px-3 py-1 rounded-full text-xs font-medium text-white ${getStatusColor(phase.status)}`
+                    }, getStatusText(phase.status))
+                  ])
+                ])
+              ])
+            ))
+          ])
+        ]);
+      };
+
+      const EcosystemGraph = () => {
+        return React.createElement('div', {
+          className: 'mt-10 animate-fade-in'
+        }, [
+          React.createElement('h2', {
+            className: 'text-2xl font-bold text-slate-800 mb-8 text-center'
+          }, '生态系统图谱'),
+          React.createElement('div', {
+            className: 'bg-white rounded-xl shadow-sm p-6 border border-slate-100'
+          }, [
+            React.createElement('div', {
+              className: 'text-center text-slate-500'
+            }, '交互式生态系统图谱正在开发中...'),
+            React.createElement('div', {
+              className: 'mt-4 bg-slate-50 rounded-lg p-8 text-center'
+            }, [
+              React.createElement(LayoutDashboard, {
+                size: 48,
+                className: 'text-slate-400 mx-auto mb-4'
+              }),
+              React.createElement('p', {
+                className: 'text-slate-600'
+              }, '将展示平台、创作者、内容、用户之间的完整关系网络')
+            ])
+          ])
+        ]);
+      };
+
+      const App = () => {
+        const [activeTab, setActiveTab] = useState('overview');
+
+        const navItems = [
+          { id: 'overview', label: '战略总览', icon: React.createElement(Target, { size: 18 }) },
+          { id: 'blueprint', label: '全景蓝图', icon: React.createElement(Map, { size: 18 }) },
+          { id: 'why', label: '核心优势', icon: React.createElement(Zap, { size: 18 }) },
+          { id: 'roadmap', label: '行动路线', icon: React.createElement(Flag, { size: 18 }) }
+        ];
+
+        const renderContent = () => {
+          switch (activeTab) {
+            case 'overview':
+              return React.createElement('div', {
+                className: 'space-y-8 animate-fade-in'
+              }, [
+                // Hero Section
+                React.createElement('section', {
+                  className: 'relative bg-gradient-to-r from-slate-900 to-indigo-900 rounded-2xl p-8 md:p-16 overflow-hidden shadow-2xl text-white'
+                }, [
+                  React.createElement('div', {
+                    className: 'absolute top-0 right-0 w-96 h-96 bg-blue-500 opacity-20 rounded-full blur-[100px] transform translate-x-1/2 -translate-y-1/2'
+                  }),
+                  React.createElement('div', {
+                    className: 'relative z-10'
+                  }, [
+                    React.createElement('div', {
+                      className: 'inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-semibold mb-6'
+                    }, '2025 战略核心'),
+                    React.createElement('h1', {
+                      className: 'text-4xl md:text-6xl font-bold mb-6 leading-tight'
+                    }, [
+                      '北斗智影',
+                      React.createElement('span', {
+                        className: 'text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-purple-300'
+                      }, '全景系统')
+                    ]),
+                    React.createElement('p', {
+                      className: 'text-slate-300 text-lg md:text-xl max-w-3xl leading-relaxed mb-10'
+                    }, '以 ', React.createElement('b', null, 'AI分发变现能力'), ' 为核心，通过 ', React.createElement('b', null, 'AI创作'), ' 为基础 + ', React.createElement('b', null, '版权控股'), ' 为辅助，形成基于产销一体化的内容分发平台。'),
+
+                    React.createElement('div', {
+                      className: 'grid grid-cols-1 md:grid-cols-3 gap-4'
+                    }, [
+                      React.createElement('div', {
+                        className: 'bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10'
+                      }, [
+                        React.createElement('div', {
+                          className: 'text-blue-400 font-bold mb-1 flex items-center gap-2'
+                        }, [React.createElement(Globe, { size: 16 }), '全球分发']),
+                        React.createElement('div', {
+                          className: 'text-sm text-slate-200'
+                        }, '面向C端的出海分发平台')
+                      ]),
+                      React.createElement('div', {
+                        className: 'bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10'
+                      }, [
+                        React.createElement('div', {
+                          className: 'text-purple-400 font-bold mb-1 flex items-center gap-2'
+                        }, [React.createElement(LayoutDashboard, { size: 16 }), '商业模型']),
+                        React.createElement('div', {
+                          className: 'text-sm text-slate-200'
+                        }, '分发平台 + 股权制作 (J-V Model)')
+                      ]),
+                      React.createElement('div', {
+                        className: 'bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10'
+                      }, [
+                        React.createElement('div', {
+                          className: 'text-emerald-400 font-bold mb-1 flex items-center gap-2'
+                        }, [React.createElement(TrendingUp, { size: 16 }), '超级愿景']),
+                        React.createElement('div', {
+                          className: 'text-sm text-slate-200'
+                        }, '赋能"超级个体"生态')
+                      ])
+                    ])
+                  ])
+                ]),
+                React.createElement(CoreEngines),
+                React.createElement(EcosystemGraph)
+              ]);
+            case 'blueprint':
+              return React.createElement('div', {
+                className: 'h-[calc(100vh-140px)] flex flex-col'
+              }, [
+                React.createElement('div', {
+                  className: 'mb-4'
+                }, [
+                  React.createElement('h2', {
+                    className: 'text-2xl font-bold text-slate-800'
+                  }, '全景蓝图'),
+                  React.createElement('p', {
+                    className: 'text-slate-500 text-sm'
+                  }, '点击节点查看详细定义与状态')
+                ]),
+                React.createElement('div', {
+                  className: 'flex-grow border border-slate-200 rounded-xl bg-white shadow-sm overflow-hidden'
+                }, React.createElement('div', {
+                  className: 'text-slate-500 text-center p-8'
+                }, '全景蓝图页面正在开发中，敬请期待...'))
+              ]);
+            case 'why':
+              return React.createElement(WhyBeidou);
+            case 'roadmap':
+              return React.createElement(Roadmap);
+            default:
+              return null;
+          }
+        };
+
+        return React.createElement('div', {
+          className: 'min-h-screen bg-slate-50 flex font-sans text-slate-800'
+        }, [
+          // Sidebar Navigation (Desktop)
+          React.createElement('aside', {
+            className: 'hidden lg:flex flex-col w-64 bg-white border-r border-slate-200 fixed h-full z-20'
+          }, [
+            React.createElement('div', {
+              className: 'h-16 flex items-center px-6 border-b border-slate-100'
+            }, [
+              React.createElement('div', {
+                className: 'w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white text-xs font-bold mr-3'
+              }, 'B'),
+              React.createElement('span', {
+                className: 'font-bold text-lg tracking-tight'
+              }, '北斗智影战略')
+            ]),
+
+            React.createElement('nav', {
+              className: 'flex-1 py-6 px-3 space-y-1'
+            },
+              navItems.map((item) =>
+                React.createElement('button', {
+                  key: item.id,
+                  onClick: () => setActiveTab(item.id),
+                  className: `w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    activeTab === item.id
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  }`
+                }, [
+                  item.icon,
+                  item.label
+                ])
+              )
+            ),
+
+            React.createElement('div', {
+              className: 'p-4 border-t border-slate-100'
+            }, [
+              React.createElement('p', {
+                className: 'font-semibold text-slate-700 mb-1'
+              }, 'Source Material:'),
+              React.createElement('p', null, '• OPC 会议纪要 (2025.12.02)'),
+              React.createElement('p', null, '• 音频转录 (张峰/马云)')
+            ])
+          ]),
+
+          // Main Content Area
+          React.createElement('main', {
+            className: 'flex-1 min-w-0 lg:ml-64 pt-14 lg:pt-0'
+          }, [
+            React.createElement('div', {
+              className: 'max-w-6xl mx-auto p-4 md:p-8 lg:p-12'
+            }, renderContent())
+          ])
+        ]);
+      };
+
+      // Use React 18's new API to render
+      const container = document.getElementById('root');
+      const root = ReactDOM.createRoot(container);
+      root.render(React.createElement(App));
+    </script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </body>
+</html>
