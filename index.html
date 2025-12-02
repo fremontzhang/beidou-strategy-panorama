@@ -6,10 +6,15 @@
     <title>北斗智影战略全景图</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/d3@7"></script>
     <style>
       body {
         font-family: 'Inter', sans-serif;
         background-color: #f8fafc;
+        margin: 0;
+        padding: 0;
       }
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
@@ -17,30 +22,116 @@
         height: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #f1f1f1; 
+        background: #f1f1f1;
       }
       ::-webkit-scrollbar-thumb {
-        background: #cbd5e1; 
+        background: #cbd5e1;
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8; 
+        background: #94a3b8;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "d3": "https://aistudiocdn.com/d3@^7.9.0"
-  }
-}
-</script>
-<script type="module" src="./index.tsx"></script>
-</head>
+  </head>
   <body>
     <div id="root"></div>
-</body>
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      function App() {
+        const [data, setData] = useState({
+          title: "北斗战略全景系统",
+          subtitle: "展示北斗导航系统的战略价值和技术生态",
+          sections: [
+            {
+              title: "核心价值",
+              items: ["全球定位精度", "区域增强服务", "军民融合应用", "一带一路支持"]
+            },
+            {
+              title: "技术优势",
+              items: ["三频信号", "短报文通信", "星间链路", "抗干扰能力"]
+            }
+          ]
+        });
+
+        return React.createElement('div', {
+          className: 'min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8'
+        }, [
+          React.createElement('header', {
+            key: 'header',
+            className: 'text-center mb-12'
+          }, [
+            React.createElement('h1', {
+              key: 'title',
+              className: 'text-5xl font-bold text-gray-800 mb-4'
+            }, data.title),
+            React.createElement('p', {
+              key: 'subtitle',
+              className: 'text-xl text-gray-600'
+            }, data.subtitle)
+          ]),
+
+          React.createElement('main', {
+            key: 'main',
+            className: 'max-w-6xl mx-auto'
+          },
+            React.createElement('div', {
+              className: 'grid md:grid-cols-2 gap-8 mb-12'
+            },
+              data.sections.map((section, index) =>
+                React.createElement('div', {
+                  key: index,
+                  className: 'bg-white rounded-lg shadow-lg p-8'
+                }, [
+                  React.createElement('h2', {
+                    key: 'title',
+                    className: 'text-2xl font-semibold text-gray-800 mb-6'
+                  }, section.title),
+                  React.createElement('ul', {
+                    key: 'list',
+                    className: 'space-y-3'
+                  },
+                    section.items.map((item, itemIndex) =>
+                      React.createElement('li', {
+                        key: itemIndex,
+                        className: 'flex items-center'
+                      }, [
+                        React.createElement('div', {
+                          key: 'bullet',
+                          className: 'w-2 h-2 bg-blue-500 rounded-full mr-3'
+                        }),
+                        React.createElement('span', {
+                          key: 'text',
+                          className: 'text-gray-700'
+                        }, item)
+                      ])
+                    )
+                  )
+                ])
+              )
+            )
+          ),
+
+          React.createElement('footer', {
+            key: 'footer',
+            className: 'text-center mt-12 text-gray-600'
+          }, [
+            React.createElement('p', {
+              key: 'footer-text'
+            }, '北斗智影战略全景系统 © 2024'),
+            React.createElement('p', {
+              key: 'footer-sub',
+              className: 'text-sm mt-2'
+            }, '基于现代Web技术构建的交互式展示平台')
+          ])
+        ]);
+      }
+
+      // 使用React 18的新API渲染应用
+      const container = document.getElementById('root');
+      const root = ReactDOM.createRoot(container);
+      root.render(React.createElement(App));
+    </script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </body>
 </html>
